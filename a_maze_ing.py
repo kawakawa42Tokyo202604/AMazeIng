@@ -88,6 +88,8 @@ def check_error(av: list[str]) -> dict[str, Any]:
                 raise ValueError("ENTRY coordinates are out of maze bounds.")
             if not (0 <= exit_x < width_val and 0 <= exit_y < height_val):
                 raise ValueError("EXIT coordinates are out of maze bounds.")
+            if (entry_x, entry_y) == (exit_x, exit_y):
+                raise ValueError("ENTRY and EXIT must be different.")
 
             parsed_data["WIDTH"] = width_val
             parsed_data["HEIGHT"] = height_val
@@ -152,6 +154,10 @@ def main() -> None:
     generator = MazeGenerator(conf["WIDTH"], conf["HEIGHT"], conf["SEED"])
     maze = generator.generate(perfect=conf["PERFECT"])
     ans = generator.solve(conf["ENTRY"], conf["EXIT"])
+    if not ans:
+        sys.stderr.write(
+            "Error: ENTRY or EXIT is blocked by the 42 pattern.\n")
+        sys.exit(1)
     write_output(maze, ans, conf)
 
 

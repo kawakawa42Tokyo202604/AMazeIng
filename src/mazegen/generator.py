@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import random
+import sys
 
 
 class UnionFind:
@@ -62,8 +63,11 @@ class MazeGenerator:
         return True
 
     def generate(self, perfect: bool = True) -> list[list[int]]:
+        self.grid = [[15] * self.width for _ in range(self.height)]
+        self.closed_cells.clear()
         random.seed(self.seed)
-        self.embed_42()
+        if not self.embed_42():
+            sys.stderr.write("Warning: maze is too small for the 42 pattern\n")
 
         walls = []
         for y in range(self.height):
